@@ -22,17 +22,25 @@ async function getHtmlPage() {
 }
 
 server.on('request', async (req, res) => {
-    try {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        const htmlPage = await getHtmlPage();
-        res.write( htmlPage );
-    } catch(err) {
-        console.dir( err );
-        res.writeHead(500, {'Content-Type': 'text/html'});
-        const htmlPage = "Error en el servidor";
-        res.write( htmlPage );
-    } finally {
-        res.end();
+
+    if( req.url === '/' ) {
+        try {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            const htmlPage = await getHtmlPage();
+            res.write( htmlPage );
+        } catch(err) {
+            console.dir( err );
+            res.writeHead(500, {'Content-Type': 'text/html'});
+            const htmlPage = "Error en el servidor";
+            res.write( htmlPage );
+        } finally {
+            res.end();
+        }
+    } else if( req.url === '/estilo.css' ) {
+       fs.readFile('css/autogenerado.css', (err, data) => {
+            res.writeHead(200, {'Content-Type': 'text/css'});
+            res.end( data );
+        }); 
     }
 });
 
